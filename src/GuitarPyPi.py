@@ -1,8 +1,10 @@
 #!/usr/bin/python
 import pygame
+import sys
 import Config
 from pprint import pprint
 from pygame.locals import *
+from Config import InputEvent
 
 NO_BUTTON_CHORD = 0
 
@@ -48,18 +50,23 @@ def fist():
     pygame.event.post(firstevent)
     #print "GotEvent  " + pygame.event.event_name(event.type)
     for event in pygame.event.get():
-	eventCode = inputDriver.handleInputEvent(event)
-	print "Eventcode: " + eventCode
-	if len(eventCode) > 0:
-	    handleEventCode(eventCode)
+        if event.type == pygame.QUIT: sys.exit()
+	inputEvent = inputDriver.handleInputEvent(event)
+	if not inputEvent == None:
+	    print "Eventcode: " + inputEvent.eventCode
+	    handleEventCode(inputEvent)
 
 	
 	
-def handleEventCode(eventCode):	
-    if eventCode.startswith("pressedchord"):
-	handleChordPressed(int(eventCode.replace("pressedchord", "")))
-    if eventCode.startswith("releasedchord"):
-	handleChordReleased(int(eventCode.replace("releasedchord", "")))
+def handleEventCode(inputEvent):
+  
+    eventCode = inputEvent.eventCode
+
+
+    if inputEvent.eventType == InputEvent.CONST_TYPE_CHORD_DOWN:
+	handleChordPressed(int(eventCode.replace("chord", "")))
+    if inputEvent.eventType == InputEvent.CONST_TYPE_CHORD_UP:
+	handleChordReleased(int(eventCode.replace("chord", "")))
     if eventCode == "up":
         #Trigger pulled up: play all chords in the activce chordlist from muted chords map
 	playMutedChords()
@@ -73,7 +80,8 @@ def handleEventCode(eventCode):
 	nextSong()
     if eventCode == "previousSong":
 	previousSong()
-	
+    if eventCode == "exit":
+	sys.exit()
 
 
 def nextSong():

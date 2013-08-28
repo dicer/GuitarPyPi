@@ -1,8 +1,8 @@
 <song id="test1" name="test 1 song" initSound="../audio/ruelps2.ogg">
 	<chords>
 		<chord id="0">
-			<sound id="up" file="../audio/Bb-open.ogg"/>
-			<sound id="down" file="../audio/Bb-muted.ogg"/>
+			<sound id="up" file="../audio/empty.ogg"/>
+			<sound id="down" file="../audio/empty.ogg"/>
 		</chord>
 		<chord id="1">
 			<sound id="up" file="../audio/D-muted.ogg"/>

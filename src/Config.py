@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import pygame
+import sys
 import xml.etree.ElementTree as ET
 from pygame.locals import *
 
@@ -70,19 +71,73 @@ class Config:
 		    self.inputDriver = InputDriverKeyboard(inputEl, inputName)
 	        if (inputDriverId == "joystick"):
 		    self.inputDriver = InputDriverJoystick(inputEl, inputName, useInputEl.attrib['deviceNumber'])
-	        
-        print "Using input " + inputName + " (" + self.inputId + ") with driver " + inputDriverId
+	if hasattr (self, "inputDriver"):
+	    print "Using input " + inputName + " (" + self.inputId + ") with driver " + inputDriverId
+	else:
+	    print "Could not find input with id '" + self.inputId + "'"
+	    sys.exit()
         
     def getSongs(self):
         return self.songs
         
 
-        
+
+class InputEvent:
+  
+    CONST_TYPE_CHORD_UP = 0
+    CONST_TYPE_CHORD_DOWN = 1
+    CONST_TYPE_TRIGGER = 2
+  
+    def __init__(self, eventCode, eventType):
+	self.eventCode = eventCode
+	self.eventType = eventType
+      
+      
     
 class InputDriverKeyboard:
 
     def __init__(self, inputEl, inputName):
 	self.buttons = {}
+        buttonsEl = inputEl.find('buttons')
+        
+        for buttonEl in buttonsEl.findall('button'):
+	    self.buttons[int(buttonEl.attrib['hardwareId'])] = (buttonEl.attrib['eventIdDown'], buttonEl.attrib['eventIdUp'])
+	
+	#we actually have to open a display, otherwise we do not get any input
+	#sdl driver set to dummy does not work!
+	screen = pygame.display.set_mode((640, 480))
+	pygame.display.set_caption('GuitarPyPi')
+	#pygame.event.set_grab(True)
+	#pygame.mouse.set_visible(0)
+
+	pygame.event.set_blocked(MOUSEMOTION)
+	pygame.event.set_blocked(ACTIVEEVENT)
+        
+    def handleInputEvent (self, event):
+	if event.type == KEYDOWN or event.type == KEYUP:
+	    scancode = event.scancode
+	    if not scancode in self.buttons:
+		return None
+		
+	    if event.type == KEYDOWN:
+		eventCode = self.buttons[scancode][0]
+	    if event.type == KEYUP:
+		eventCode = self.buttons[scancode][1]
+
+	    if   event.type == KEYDOWN and eventCode.startswith("chord"):
+		return InputEvent(eventCode, InputEvent.CONST_TYPE_CHORD_DOWN)
+	    elif event.type == KEYUP and eventCode.startswith("chord"):
+		return InputEvent(eventCode, InputEvent.CONST_TYPE_CHORD_UP)
+	    else:
+		return InputEvent(eventCode, InputEvent.CONST_TYPE_TRIGGER)
+        
+        debugTxt = "Unsupported event with type '" + str(event.type) + "'"
+        if hasattr (event, "scancode"):
+	  debugTxt = debugTxt + ", scancode '" + str(event.scancode)
+	if hasattr (event, "value"):
+	  debugTxt = debugTxt + "', axis '" + str(event.value) + "'"
+        print  debugTxt
+        return None;
         
 
 
@@ -97,7 +152,7 @@ class InputDriverJoystick:
         triggersEl = inputEl.find('triggers')
         
         for buttonEl in buttonsEl.findall('button'):
-	    self.buttons[int(buttonEl.attrib['hardwareId'])] = buttonEl.attrib['eventId']
+	    self.buttons[int(buttonEl.attrib['hardwareId'])] = (buttonEl.attrib['eventIdDown'], buttonEl.attrib['eventIdUp'])
         
         for triggerEl in triggersEl.findall('axis'):
 	    self.triggers[str(triggerEl.attrib['x']) + str(triggerEl.attrib['y'])] = triggerEl.attrib['eventId']
@@ -112,19 +167,20 @@ class InputDriverJoystick:
 	self.pygameJoystick = pygame.joystick.Joystick(int(deviceNumber))
 	self.pygameJoystick.init()
 
+    #returns InputEvent
     def handleInputEvent (self, event):
 	if event.type == JOYHATMOTION:
 	    triggerKey = str(event.value[0]) + str(event.value[1]);
 	    if triggerKey in self.triggers:
-		return self.triggers[triggerKey]
+		return InputEvent(self.triggers[triggerKey], InputEvent.CONST_TYPE_TRIGGER)
 	
 	elif event.type == JOYBUTTONDOWN:
 	    if event.button in self.buttons:
-	      return "pressed" + self.buttons[event.button]
+	      return InputEvent(self.buttons[event.button][0], InputEvent.CONST_TYPE_CHORD_DOWN)
         
         elif event.type == JOYBUTTONUP:
 	    if event.button in self.buttons:
-	      return "released" + self.buttons[event.button]
+	      return InputEvent(self.buttons[event.button][1], InputEvent.CONST_TYPE_CHORD_UP)
         
         debugTxt = "Unsupported event with type '" + str(event.type) + "'"
         if hasattr (event, "button"):
@@ -132,5 +188,5 @@ class InputDriverJoystick:
 	if hasattr (event, "value"):
 	  debugTxt = debugTxt + "', axis '" + str(event.value) + "'"
         print  debugTxt
-        return "";
+        return None;
         

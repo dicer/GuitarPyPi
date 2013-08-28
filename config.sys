@@ -1,18 +1,18 @@
-<main>
+<main version="1">
 
   <!-- inputId = id of an input tag below
        deviceNumber = hardware device to use (mainly useful if you got multiple joysticks/guitars connected)--> 
-  <useInput inputId="xplorerUSB" deviceNumber="0"/>
+  <useInput inputId="keyboardLenovo" deviceNumber="0"/>
 
 
   <input id="xplorerUSB" driver="joystick" name="redoctane X-Plorer Controller USB XBox">
 
     <buttons>
-      <button hardwareId="0" eventId="chord1"/>
-      <button hardwareId="1" eventId="chord2"/>
-      <button hardwareId="2" eventId="chord4"/>
-      <button hardwareId="3" eventId="chord3"/>
-      <button hardwareId="4" eventId="chord5"/>
+      <button hardwareId="0" eventIdDown="chord1" eventIdUp="chord1"/>
+      <button hardwareId="1" eventIdDown="chord2" eventIdUp="chord2"/>
+      <button hardwareId="2" eventIdDown="chord4" eventIdUp="chord4"/>
+      <button hardwareId="3" eventIdDown="chord3" eventIdUp="chord3"/>
+      <button hardwareId="4" eventIdDown="chord5" eventIdUp="chord5"/>
     </buttons>
 
     <triggers>
@@ -27,11 +27,11 @@
 
   <input id="rockbandUSB" driver="joystick" name="Rockband Wireless USB Guitar">
     <buttons>
-      <button hardwareId="a" eventId="chord1"/>
-      <button hardwareId="s" eventId="chord2"/>
-      <button hardwareId="d" eventId="chord4"/>
-      <button hardwareId="f" eventId="chord3"/>
-      <button hardwareId="4" eventId="chord5"/>
+      <button hardwareId="a" eventIdDown="chord1" eventIdUp="chord1"/>
+      <button hardwareId="s" eventIdDown="chord2" eventIdUp="chord2"/>
+      <button hardwareId="d" eventIdDown="chord4" eventIdUp="chord4"/>
+      <button hardwareId="f" eventIdDown="chord3" eventIdUp="chord3"/>
+      <button hardwareId="4" eventIdDown="chord5" eventIdUp="chord5"/>
     
     </buttons>
 
@@ -43,22 +43,45 @@
     </triggers>
   </input>
 
-  <input id="keyboard" driver="keyboard" name="Rockband Wireless USB Guitar">
+  <input id="keyboard" driver="keyboard" name="Standard USB keyboard">
     <buttons>
       <!-- f1-f5 -->
-      <button hardwareId="67" eventId="chord1"/>
-      <button hardwareId="68" eventId="chord2"/>
-      <button hardwareId="69" eventId="chord3"/>
-      <button hardwareId="70" eventId="chord4"/>
-      <button hardwareId="71" eventId="chord5"/>
+      <button hardwareId="67" eventIdDown="chord1" eventIdUp="chord1"/>
+      <button hardwareId="68" eventIdDown="chord2" eventIdUp="chord2"/>
+      <button hardwareId="69" eventIdDown="chord3" eventIdUp="chord3"/>
+      <button hardwareId="70" eventIdDown="chord4" eventIdUp="chord4"/>
+      <button hardwareId="71" eventIdDown="chord5" eventIdUp="chord5"/>
       <!--numpad enter-->
-      <button hardwareId="104" eventId="up"/>
+      <button hardwareId="104" eventIdDown="down" eventIdUp=""/>
       <!--numpad plus-->
-      <button hardwareId="86" eventId="down"/>
+      <button hardwareId="86" eventIdDown="up" eventIdUp=""/>
       <!--numpad arrow up-->
-      <button hardwareId="111" eventId="nextSong"/>
+      <button hardwareId="111" eventIdDown="nextSong" eventIdUp=""/>
       <!--numpad arrow down-->
-      <button hardwareId="111" eventId="previousSong"/>
+      <button hardwareId="116" eventIdDown="previousSong" eventIdUp=""/>
+      <!--esc-->
+      <button hardwareId="9" eventIdDown="exit" eventIdUp=""/>
+    </buttons>
+  </input>
+
+  <input id="keyboardLenovo" driver="keyboard" name="Standard USB keyboard">
+    <buttons>
+      <!-- f1-f5 -->
+      <button hardwareId="67" eventIdDown="chord1" eventIdUp="chord1"/>
+      <button hardwareId="68" eventIdDown="chord2" eventIdUp="chord2"/>
+      <button hardwareId="69" eventIdDown="chord3" eventIdUp="chord3"/>
+      <button hardwareId="70" eventIdDown="chord4" eventIdUp="chord4"/>
+      <button hardwareId="71" eventIdDown="chord5" eventIdUp="chord5"/>
+      <!--enter-->
+      <button hardwareId="36" eventIdDown="down" eventIdUp="stop"/>
+      <!--right shift-->
+      <button hardwareId="62" eventIdDown="up" eventIdUp="stop"/>
+      <!--numpad arrow up-->
+      <button hardwareId="111" eventIdDown="nextSong" eventIdUp=""/>
+      <!--numpad arrow down-->
+      <button hardwareId="116" eventIdDown="previousSong" eventIdUp=""/>
+      <!--esc-->
+      <button hardwareId="9" eventIdDown="exit" eventIdUp=""/>
     </buttons>
   </input>
 </main>
