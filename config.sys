@@ -1,0 +1,64 @@
+<main>
+
+  <!-- inputId = id of an input tag below
+       deviceNumber = hardware device to use (mainly useful if you got multiple joysticks/guitars connected)--> 
+  <useInput inputId="xplorerUSB" deviceNumber="0"/>
+
+
+  <input id="xplorerUSB" driver="joystick" name="redoctane X-Plorer Controller USB XBox">
+
+    <buttons>
+      <button hardwareId="0" eventId="chord1"/>
+      <button hardwareId="1" eventId="chord2"/>
+      <button hardwareId="2" eventId="chord4"/>
+      <button hardwareId="3" eventId="chord3"/>
+      <button hardwareId="4" eventId="chord5"/>
+    </buttons>
+
+    <triggers>
+      <axis x="0" y="0" eventId="stop"/>
+      <axis x="0" y="-1" eventId="down"/>
+      <axis x="0" y="1" eventId="up"/>
+      <axis x="1" y="0" eventId="nextSong"/>
+    </triggers>
+
+  </input>
+
+
+  <input id="rockbandUSB" driver="joystick" name="Rockband Wireless USB Guitar">
+    <buttons>
+      <button hardwareId="a" eventId="chord1"/>
+      <button hardwareId="s" eventId="chord2"/>
+      <button hardwareId="d" eventId="chord4"/>
+      <button hardwareId="f" eventId="chord3"/>
+      <button hardwareId="4" eventId="chord5"/>
+    
+    </buttons>
+
+    <triggers>
+      <axis x="0" y="0" eventId="stop"/>
+      <axis x="0" y="-1" eventId="down"/>
+      <axis x="0" y="1" eventId="up"/>
+      <axis x="1" y="0" eventId="nextSong"/>
+    </triggers>
+  </input>
+
+  <input id="keyboard" driver="keyboard" name="Rockband Wireless USB Guitar">
+    <buttons>
+      <!-- f1-f5 -->
+      <button hardwareId="67" eventId="chord1"/>
+      <button hardwareId="68" eventId="chord2"/>
+      <button hardwareId="69" eventId="chord3"/>
+      <button hardwareId="70" eventId="chord4"/>
+      <button hardwareId="71" eventId="chord5"/>
+      <!--numpad enter-->
+      <button hardwareId="104" eventId="up"/>
+      <!--numpad plus-->
+      <button hardwareId="86" eventId="down"/>
+      <!--numpad arrow up-->
+      <button hardwareId="111" eventId="nextSong"/>
+      <!--numpad arrow down-->
+      <button hardwareId="111" eventId="previousSong"/>
+    </buttons>
+  </input>
+</main>

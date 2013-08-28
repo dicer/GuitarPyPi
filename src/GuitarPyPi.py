@@ -7,7 +7,7 @@ from pygame.locals import *
 NO_BUTTON_CHORD = 0
 
 def main():
-    global guitar, chordsOpen, chordsMuted, chordsToPlay, playing, playOpen, songs, currentSong
+    global inputDriver, chordsOpen, chordsMuted, chordsToPlay, playing, playOpen, songs, currentSong
 
     print "Initialization start..."
 
@@ -16,13 +16,7 @@ def main():
     # but allowes a buffersize of 1 instead of 512 which means approx. 10ms instead of 50 ms latency!
     pygame.mixer.pre_init(22050,-16,1,1)
     pygame.init()
-    pygame.joystick.init()
  #   pygame.display.quit()
-    # we do not need this event which is thrown permanently by the guitar
-    pygame.event.set_blocked(JOYAXISMOTION)
-
-    guitar = pygame.joystick.Joystick(0)
-    guitar.init()
 
     # load config
     config = Config.Config()
@@ -31,6 +25,7 @@ def main():
     songs = config.getSongs()
     pprint(songs)
     
+    inputDriver = config.inputDriver
 
     # init status
     currentSong = 0
@@ -45,7 +40,7 @@ def main():
 
 # The main loop. Listens to the eventqueue
 def fist():
-    global guitar, chordsOpen, chordsMuted
+    global inputDriver, chordsOpen, chordsMuted
     
     # this keeps the application idle until an event is caught
     firstevent= pygame.event.wait()
@@ -53,27 +48,33 @@ def fist():
     pygame.event.post(firstevent)
     #print "GotEvent  " + pygame.event.event_name(event.type)
     for event in pygame.event.get():
-        if event.type == JOYHATMOTION:
-            handleTrigger(event)
-        elif event.type == JOYBUTTONDOWN:
-            handleButtonDown(event)
-        elif event.type == JOYBUTTONUP:
-            handleButtonUp(event)
+	eventCode = inputDriver.handleInputEvent(event)
+	print "Eventcode: " + eventCode
+	if len(eventCode) > 0:
+	    handleEventCode(eventCode)
 
+	
+	
+def handleEventCode(eventCode):	
+    if eventCode.startswith("pressedchord"):
+	handleChordPressed(int(eventCode.replace("pressedchord", "")))
+    if eventCode.startswith("releasedchord"):
+	handleChordReleased(int(eventCode.replace("releasedchord", "")))
+    if eventCode == "up":
+        #Trigger pulled up: play all chords in the activce chordlist from muted chords map
+	playMutedChords()
+    if eventCode == "down":
+        #Trigger pushed down: play all chords in the activce chordlist from open chords map
+	playOpenChords()
+    if eventCode == "stop":
+	#Trigger released: stop all chords
+	stopAll()
+    if eventCode == "nextSong":
+	nextSong()
+    if eventCode == "previousSong":
+	previousSong()
+	
 
-# Handler if the trigger status has changed
-# (0,0): Trigger released: stop all chords
-# (0,-1): Trigger pushed down: play all chords in the activce chordlist from open chords map
-# (0,1): Trigger pulled up: play all chords in the activce chordlist from muted chords map
-def handleTrigger(event):
-    if event.value == (0,0):
-        stopAll()
-    elif event.value == (0,-1):
-        playOpenChords()
-    elif event.value == (0,1):
-        playMutedChords()
-    elif event.value == (1,0):
-        nextSong()
 
 def nextSong():
     global currentSong
@@ -89,9 +90,11 @@ def nextSong():
 # Adds the selected chord to the list of actice chords.
 # Removes the cord played when no button is pressed from the list and stops it.
 # Immediately plays the chord when the trigger is active
-def handleButtonDown(event):
+def handleChordPressed(chord):
     global chordsToPlay
-    chord = getChord(event.button)
+    
+    print "Playing chord " + str(chord)
+    
     if (chord > 5):
         return
 
@@ -106,16 +109,22 @@ def handleButtonDown(event):
 # Removes the selected chord to the list of actice chords
 # Adds the cord played when no button is pressed to the list and plays it if the trigger is active.
 # Immediately stops the chord when the trigger is active.
-def handleButtonUp(event):
+def handleChordReleased(chord):
     global chordsToPlay
-    chord = getChord(event.button)
     if (chord > 5):
         return
 
     chordsToPlay.remove(chord)
-    if (noButtonPresed()):
+    
+    
+    #TODO what is this for? why check the guitar and not just the array length?
+    #if (noButtonPresed()):
+    if (len(chordsToPlay) == 0):
         chordsToPlay.append(NO_BUTTON_CHORD)
         playChord(NO_BUTTON_CHORD)
+    
+    
+    
     stopChord(chord)
 
 #stops all chords    
@@ -171,26 +180,6 @@ def playMutedChords():
     playing = True
 
 
-
-# Helper that equalizes the turner between button 2 and 3
-
-# Rockband USB Guitar
-#def getChord(buttonId):
-#    if (buttonId == 5):
-#	return 42
-#    if (buttonId == 0):
-#        return 4
-#    if (buttonId == 4):
-#        return 5
-#    return buttonId
-
-# Guitar Hero USB Guitar
-def getChord(buttonId):
-    if (buttonId == 2):
-        return buttonId + 2
-    if (buttonId == 3):
-        return buttonId
-    return buttonId + 1
 
 # Helper that 
 def noButtonPresed():
