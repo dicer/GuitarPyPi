@@ -79,3 +79,10 @@ Roadmap
 - ...
 
 
+Useful information
+------------------
+
+If you need to get sample ogg files, you can use the following handy service:
+http://speechutil.appspot.com/convert/ogg?file=1&text=ddddd
+Or if it sounds funny use this and encode yourself:
+http://speechutil.appspot.com/convert/wav?file=1&text=ddddd

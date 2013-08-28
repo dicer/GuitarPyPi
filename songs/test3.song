@@ -1,0 +1,28 @@
+<song id="test3" name="test 3 song" initSound="../audio/ruelps2.ogg">
+	<chords>
+		<chord id="0">
+			<sound id="up" file="../audio/empty.ogg"/>
+			<sound id="down" file="../audio/empty.ogg"/>
+		</chord>
+		<chord id="1">
+			<sound id="up" file="../audio/1muted.ogg"/>
+			<sound id="down" file="../audio/1open.ogg"/>
+		</chord>
+		<chord id="2">
+			<sound id="up" file="../audio/2muted.ogg"/>
+			<sound id="down" file="../audio/2open.ogg"/>
+		</chord>
+		<chord id="3">
+			<sound id="up" file="../audio/3muted.ogg"/>
+			<sound id="down" file="../audio/3open.ogg"/>
+		</chord>
+		<chord id="4">
+			<sound id="up" file="../audio/4muted.ogg"/>
+			<sound id="down" file="../audio/4open.ogg"/>
+		</chord>
+		<chord id="5">
+			<sound id="up" file="../audio/5muted.ogg"/>
+			<sound id="down" file="../audio/5open.ogg"/>
+		</chord>
+	</chords>
+</song>
